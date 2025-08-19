@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fishing Gear Optimizer</title>
+    <title>FishIQ - AI Fishing Gear Optimizer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,20 +12,30 @@
 <div id="subscription-popup">
     <div class="popup-content">
         <h2>Get Your 1-Day Free Fishing Tips!</h2>
-        <p>After your free day, subscription is required to continue using the AI Fishing Gear Optimizer.</p>
+        <p>After your free day, a subscription is required to continue using FishIQ.</p>
         <button id="free-day-btn">Start Free Day</button>
     </div>
 </div>
 
 <div class="container">
-    <h1>AI Fishing Gear Optimizer</h1>
-    <p>Upload a picture of your water, enter your location, and get optimized fishing gear recommendations!</p>
-    
-    <form id="gear-form">
-        <input type="file" id="water-pic" accept="image/*" required><br>
-        <input type="text" id="location" placeholder="Enter your location" required><br>
-        <button type="submit">Get Gear Recommendations</button>
-    </form>
+    <h1>FishIQ - AI Fishing Gear Optimizer</h1>
+    <p>Capture a photo of the water and share your location to get optimized fishing gear recommendations.</p>
+
+    <!-- Camera Section -->
+    <div>
+        <video id="camera" autoplay playsinline style="border-radius:10px; width:100%; max-width:400px;"></video><br>
+        <button id="take-photo-btn">Take Photo</button>
+        <canvas id="photo-canvas" style="display:none;"></canvas>
+    </div>
+
+    <!-- Location Section -->
+    <div style="margin-top:20px;">
+        <button id="share-location-btn">Share My Location</button>
+        <p id="location-status" style="margin-top:10px;"></p>
+    </div>
+
+    <!-- Submit for AI Analysis -->
+    <button id="submit-btn" style="margin-top:30px;">Get Gear Recommendations</button>
 </div>
 
 <script src="script.js"></script>
