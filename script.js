@@ -40,30 +40,34 @@ if (canvas && ctx) {
 }
 
 // ------------------- Subscription Popup Logic -------------------
-window.addEventListener('load', () => {
-    const freeDayStarted = localStorage.getItem('freeDayStarted');
+document.addEventListener('DOMContentLoaded', () => {
     const popup = document.getElementById('subscription-popup');
+    const freeDayBtn = document.getElementById('free-day-btn');
 
+    // Show popup if free day not started
+    const freeDayStarted = localStorage.getItem('freeDayStarted');
     if (!freeDayStarted) {
-        popup?.style.display = 'flex';
+        if (popup) popup.style.display = 'flex';
     } else {
         const startTime = parseInt(localStorage.getItem('freeDayStartTime'));
         const now = Date.now();
         if (now - startTime > 24*60*60*1000) {
             alert("Your free day is over. Please subscribe to continue.");
-            window.location.href = "subscription_page.html";
+            window.location.href = "subscription_page.html"; // redirect to subscription page
         } else {
-            popup?.style.display = 'none';
+            if (popup) popup.style.display = 'none';
         }
     }
-});
 
-const freeDayBtn = document.getElementById('free-day-btn');
-freeDayBtn?.addEventListener('click', () => {
-    localStorage.setItem('freeDayStarted', true);
-    localStorage.setItem('freeDayStartTime', Date.now());
-    document.getElementById('subscription-popup').style.display = 'none';
-    alert("Your 1-day free trial has started! You can now use the website.");
+    // Add click listener to Start Free Day button
+    if (freeDayBtn) {
+        freeDayBtn.addEventListener('click', () => {
+            localStorage.setItem('freeDayStarted', true);
+            localStorage.setItem('freeDayStartTime', Date.now());
+            if (popup) popup.style.display = 'none';
+            alert("Your 1-day free trial has started! You can now use the website.");
+        });
+    }
 });
 
 // ------------------- Camera Setup -------------------
@@ -120,11 +124,9 @@ sendBtn?.addEventListener('click', ()=>{
     const userMsg = userInputField.value.trim();
     if(!userMsg) return;
 
-    // Add user message to memory
     chatMemory.push({sender: "user", message: userMsg});
     appendMessage("You", userMsg, "right");
 
-    // Generate advanced AI response
     const aiMsg = generateAdvancedFishingTip(userMsg, chatMemory);
     appendMessage("FishIQ AI", aiMsg, "left");
 
@@ -165,7 +167,6 @@ function generateAdvancedFishingTip(userInput, memory){
         return "Spring: shallow areas, summer: deeper waters, fall: active near surface, winter: slow near structure.";
     }
 
-    // Dynamic fallback tips
     const dynamicTips = [
         "Observe local fish behavior and adjust bait size and color accordingly.",
         "Vary retrieval speed; sometimes a slow twitch works better than a fast reel.",
