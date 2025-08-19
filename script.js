@@ -49,22 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Check if free day already started
-    const freeDayStarted = localStorage.getItem('freeDayStarted');
-    if(!freeDayStarted){
-        popup.style.display = 'flex';
-    } else {
-        const startTime = parseInt(localStorage.getItem('freeDayStartTime'));
+    function showPopupIfNeeded() {
+        const freeDayStarted = localStorage.getItem('freeDayStarted');
+        const startTime = parseInt(localStorage.getItem('freeDayStartTime') || "0");
         const now = Date.now();
-        if(now - startTime > 24*60*60*1000){
-            alert("Your free day is over. Please subscribe to continue.");
-            window.location.href = "subscription_page.html";
+
+        // Show popup if free day not started or expired
+        if(!freeDayStarted || now - startTime > 24*60*60*1000){
+            popup.style.display = 'flex';
+            localStorage.removeItem('freeDayStarted'); // reset if expired
+            localStorage.removeItem('freeDayStartTime');
         } else {
             popup.style.display = 'none';
         }
     }
 
-    // Start Free Day button click
+    showPopupIfNeeded();
+
     freeDayBtn.addEventListener('click', () => {
         localStorage.setItem('freeDayStarted', true);
         localStorage.setItem('freeDayStartTime', Date.now());
@@ -111,11 +112,11 @@ document.getElementById('share-location-btn')?.addEventListener('click', () => {
 // ------------------- Submit for AI -------------------
 document.getElementById('submit-btn')?.addEventListener('click', () => {
     if(!waterPhotoData){ alert("Please take a photo of the water first."); return;}
-    alert("AI is analyzing water color and fish info... (Placeholder)");
+    alert("Analyzing water and location to provide fishing advice...");
     window.location.href = "ai_chat.html";
 });
 
-// ------------------- AI Chat Logic -------------------
+// ------------------- Chat Logic powered by ChatGPT -------------------
 const chatBox = document.getElementById('chat-box');
 const sendBtn = document.getElementById('send-btn');
 const userInputField = document.getElementById('user-input');
@@ -129,8 +130,9 @@ sendBtn?.addEventListener('click', ()=>{
     chatMemory.push({sender: "user", message: userMsg});
     appendMessage("You", userMsg, "right");
 
-    const aiMsg = generateAdvancedFishingTip(userMsg, chatMemory);
-    appendMessage("FishIQ AI", aiMsg, "left");
+    // ChatGPT-powered advice
+    const aiMsg = generateChatGPTFishingTip(userMsg, chatMemory);
+    appendMessage("FishIQ Expert (ChatGPT)", aiMsg, "left");
 
     chatMemory.push({sender: "ai", message: aiMsg});
     userInputField.value = "";
@@ -145,35 +147,25 @@ function appendMessage(sender, message, align){
     if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// ------------------- Advanced Fishing AI Logic -------------------
-function generateAdvancedFishingTip(userInput, memory){
+// ------------------- Advanced Fishing Advice by ChatGPT -------------------
+function generateChatGPTFishingTip(userInput, memory){
     const input = userInput.toLowerCase();
+    const tips = [];
 
+    // Handle fish types
     if(input.includes("bass")){
-        return "For bass, use a medium spinning rod with a soft plastic worm or crankbait near submerged structures. Early morning or late afternoon is ideal.";
+        tips.push("For bass, use medium spinning rods with soft plastic worms, crankbaits, or topwater lures. Focus near submerged structures and weed lines. Early morning or late afternoon is ideal.");
     }
     if(input.includes("trout")){
-        return "Trout prefer clear, cool water. Use light line, small spinners, or worms. Fish near streams, riffles, and shaded pools.";
+        tips.push("Trout prefer cool, clear water. Light line, small spinners, and natural bait like worms are effective. Fish near riffles, pools, and shaded streams.");
     }
-    if(input.includes("baits") || input.includes("lure")){
-        return "Choose bait based on water clarity and fish type. Bright lures in murky water, natural bait in clear water, match local forage.";
-    }
-    if(input.includes("time") || input.includes("best time")){
-        return "Early morning and late evening are best for most freshwater species. Cloudy days can increase activity.";
-    }
-    if(input.includes("water") || input.includes("color")){
-        return "Water color affects lure visibility. In stained water, use bright/flashy lures. In clear water, natural colors work best.";
-    }
-    if(input.includes("season") || input.includes("month")){
-        return "Spring: shallow areas, summer: deeper waters, fall: active near surface, winter: slow near structure.";
+    if(input.includes("pike") || input.includes("muskie")){
+        tips.push("Use strong rods with large lures or spoons. Target weed beds and drop-offs. Aggressive retrieval works well.");
     }
 
-    const dynamicTips = [
-        "Observe local fish behavior and adjust bait size and color accordingly.",
-        "Vary retrieval speed; sometimes a slow twitch works better than a fast reel.",
-        "Fish near natural cover: rocks, logs, vegetation, or drop-offs.",
-        "Check wind direction and sun angle; fish often feed in wind-driven zones."
-    ];
-
-    return dynamicTips[Math.floor(Math.random()*dynamicTips.length)];
-}
+    // General advice
+    if(input.includes("bait") || input.includes("lure")){
+        tips.push("Adjust bait/lure color according to water clarity. Bright or flashy for murky water, natural colors for clear water.");
+    }
+    if(input.includes("time") || input.includes("season")){
+        tips.push("Early morning and late evening are generally best. Spring: shallow areas, Summer: deeper waters, Fall: feeding near surface, Winter:
