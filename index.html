@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FishIQ - AI Fishing Gear Optimizer</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FishIQ - AI Fishing Gear Optimizer</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<canvas id="bubble-canvas"></canvas>
 
 <!-- Subscription Popup -->
 <div id="subscription-popup">
@@ -19,7 +21,7 @@
 
 <div class="container">
     <h1>FishIQ - AI Fishing Gear Optimizer</h1>
-    <p>Capture a photo of the water and share your location to get optimized fishing gear recommendations.</p>
+    <p>Capture a photo of the water and optionally share your location for better gear recommendations.</p>
 
     <!-- Camera Section -->
     <div>
@@ -30,7 +32,7 @@
 
     <!-- Location Section -->
     <div style="margin-top:20px;">
-        <button id="share-location-btn">Share My Location</button>
+        <button id="share-location-btn">Share My Location (Optional)</button>
         <p id="location-status" style="margin-top:10px;"></p>
     </div>
 
