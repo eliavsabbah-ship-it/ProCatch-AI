@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fishing Chat</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FishIQ - AI Fishing Tips</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<canvas id="bubble-canvas"></canvas>
+
 <div class="container">
     <h1>Fishing Tips Chat</h1>
-    <p>Chat with AI to get fishing advice at your location!</p>
-    
-    <div id="chat-box" style="background: rgba(0,0,0,0.3); padding:20px; border-radius:10px; height:400px; overflow-y:auto;">
-        <!-- Chat messages will appear here -->
-    </div>
-    
+    <p>Chat with AI to get fishing advice for your location!</p>
+
+    <div id="chat-box"></div>
+
     <input type="text" id="user-input" placeholder="Ask AI about fishing..." style="width:70%;">
     <button id="send-btn">Send</button>
 </div>
