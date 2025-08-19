@@ -44,30 +44,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const popup = document.getElementById('subscription-popup');
     const freeDayBtn = document.getElementById('free-day-btn');
 
-    // Show popup if free day not started
+    if(!popup || !freeDayBtn){
+        console.error("Subscription popup or button not found!");
+        return;
+    }
+
+    // Check if free day already started
     const freeDayStarted = localStorage.getItem('freeDayStarted');
-    if (!freeDayStarted) {
-        if (popup) popup.style.display = 'flex';
+    if(!freeDayStarted){
+        popup.style.display = 'flex';
     } else {
         const startTime = parseInt(localStorage.getItem('freeDayStartTime'));
         const now = Date.now();
-        if (now - startTime > 24*60*60*1000) {
+        if(now - startTime > 24*60*60*1000){
             alert("Your free day is over. Please subscribe to continue.");
-            window.location.href = "subscription_page.html"; // redirect to subscription page
+            window.location.href = "subscription_page.html";
         } else {
-            if (popup) popup.style.display = 'none';
+            popup.style.display = 'none';
         }
     }
 
-    // Add click listener to Start Free Day button
-    if (freeDayBtn) {
-        freeDayBtn.addEventListener('click', () => {
-            localStorage.setItem('freeDayStarted', true);
-            localStorage.setItem('freeDayStartTime', Date.now());
-            if (popup) popup.style.display = 'none';
-            alert("Your 1-day free trial has started! You can now use the website.");
-        });
-    }
+    // Start Free Day button click
+    freeDayBtn.addEventListener('click', () => {
+        localStorage.setItem('freeDayStarted', true);
+        localStorage.setItem('freeDayStartTime', Date.now());
+        popup.style.display = 'none';
+        alert("Your 1-day free trial has started! Enjoy the website.");
+    });
 });
 
 // ------------------- Camera Setup -------------------
@@ -108,7 +111,6 @@ document.getElementById('share-location-btn')?.addEventListener('click', () => {
 // ------------------- Submit for AI -------------------
 document.getElementById('submit-btn')?.addEventListener('click', () => {
     if(!waterPhotoData){ alert("Please take a photo of the water first."); return;}
-    // Location is optional
     alert("AI is analyzing water color and fish info... (Placeholder)");
     window.location.href = "ai_chat.html";
 });
@@ -134,7 +136,6 @@ sendBtn?.addEventListener('click', ()=>{
     userInputField.value = "";
 });
 
-// Function to append messages to chat box
 function appendMessage(sender, message, align){
     const div = document.createElement('div');
     div.textContent = `${sender}: ${message}`;
