@@ -1,9 +1,8 @@
-// Subscription Logic
+// ------------------- Subscription Logic -------------------
 window.addEventListener('load', () => {
     if (!localStorage.getItem('freeDayStarted')) {
         document.getElementById('subscription-popup').style.display = 'flex';
     } else {
-        // Check if 24 hours have passed
         const startTime = parseInt(localStorage.getItem('freeDayStartTime'));
         const now = Date.now();
         if (now - startTime > 24*60*60*1000) {
@@ -19,42 +18,65 @@ document.getElementById('free-day-btn').addEventListener('click', () => {
     document.getElementById('subscription-popup').style.display = 'none';
 });
 
-// Gear Form Submission
-document.getElementById('gear-form').addEventListener('submit', (e)=>{
-    e.preventDefault();
-    
-    const pic = document.getElementById('water-pic').files[0];
-    const location = document.getElementById('location').value;
+// ------------------- Camera Setup -------------------
+const video = document.getElementById('camera');
+const canvas = document.getElementById('photo-canvas');
+const takePhotoBtn = document.getElementById('take-photo-btn');
 
-    // Normally here you would send data to AI backend
-    alert("AI is analyzing your water and location... (Placeholder)");
-    
-    // Redirect to AI chat for optional tips
-    window.location.href = "ai_chat.html";
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+    video.srcObject = stream;
+})
+.catch(err => {
+    alert("Camera access is required to take a photo of the water.");
 });
 
-// AI Chat Logic (Placeholder)
-if(document.getElementById('send-btn')){
-    const chatBox = document.getElementById('chat-box');
-    document.getElementById('send-btn').addEventListener('click', ()=>{
-        const userInput = document.getElementById('user-input').value;
-        if(!userInput) return;
-        
-        // Display user message
-        const userMsg = document.createElement('div');
-        userMsg.textContent = "You: " + userInput;
-        userMsg.style.margin = "10px";
-        userMsg.style.textAlign = "right";
-        chatBox.appendChild(userMsg);
-        
-        // AI Response Placeholder
-        const aiMsg = document.createElement('div');
-        aiMsg.textContent = "AI: Based on your location, try using medium strength rod with live bait. (Placeholder)";
-        aiMsg.style.margin = "10px";
-        aiMsg.style.textAlign = "left";
-        chatBox.appendChild(aiMsg);
-        
-        chatBox.scrollTop = chatBox.scrollHeight;
-        document.getElementById('user-input').value = '';
-    });
-}
+let waterPhotoData = null;
+takePhotoBtn.addEventListener('click', () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    waterPhotoData = canvas.toDataURL('image/png'); // Save photo data for AI
+    alert("Photo captured successfully!");
+});
+
+// ------------------- Location Setup -------------------
+let userLocation = null;
+const locationStatus = document.getElementById('location-status');
+
+document.getElementById('share-location-btn').addEventListener('click', () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                userLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                locationStatus.textContent = `Location captured: Lat ${userLocation.latitude.toFixed(5)}, Lon ${userLocation.longitude.toFixed(5)}`;
+            },
+            (err) => {
+                locationStatus.textContent = "Unable to get location.";
+            }
+        );
+    } else {
+        locationStatus.textContent = "Geolocation is not supported by your browser.";
+    }
+});
+
+// ------------------- Submit for AI -------------------
+document.getElementById('submit-btn').addEventListener('click', () => {
+    if (!waterPhotoData) {
+        alert("Please take a photo of the water first.");
+        return;
+    }
+    if (!userLocation) {
+        alert("Please share your location first.");
+        return;
+    }
+
+    // Here you would send `waterPhotoData` and `userLocation` to your AI backend
+    alert("AI is analyzing the water color and local fish species... (Placeholder)");
+
+    // Redirect to AI chat page for optional tips
+    window.location.href = "ai_chat.html";
+});
